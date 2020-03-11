@@ -371,14 +371,14 @@ export const serializedSecureEnvSourceText = (function secureEnvFactory(rawEnv: 
                 // function from the outer realm. By throwing a new secure error,
                 // we eliminates the stack information from the outer realm as a consequence.
                 let secError;
-                const { message, constructor } = e;
+                const { message } = e;
                 try {
-                    // the error constructor must be a raw error since it occur when calling
+                    // the error prototype must be a raw error since it occur when calling
                     // a function from the outer realm.
-                    const secErrorConstructor = rawEnv.getSecureRef(constructor);
-                    // the secure constructor must be registered (done during construction of env)
+                    const secErrorProto = rawEnv.getSecureRef(getPrototypeOf(e));
+                    // the secure prototype must be registered (done during construction of env)
                     // otherwise we need to fallback to a regular error.
-                    secError = construct(secErrorConstructor as SecureFunction, [message]);
+                    secError = construct(secErrorProto.constructor as SecureFunction, [message]);
                 } catch {
                     // in case the constructor inference fails
                     secError = new Error(message);
@@ -403,14 +403,14 @@ export const serializedSecureEnvSourceText = (function secureEnvFactory(rawEnv: 
                 // constructor from the outer realm. By throwing a new secure error,
                 // we eliminates the stack information from the outer realm as a consequence.
                 let secError;
-                const { message, constructor } = e;
+                const { message } = e;
                 try {
-                    // the error constructor must be a raw error since it occur when calling
+                    // the error prototype must be a raw error since it occur when calling
                     // a function from the outer realm.
-                    const secErrorConstructor = rawEnv.getSecureRef(constructor);
-                    // the secure constructor must be registered (done during construction of env)
+                    const secErrorProto = rawEnv.getSecureRef(getPrototypeOf(e));
+                    // the secure prototype must be registered (done during construction of env)
                     // otherwise we need to fallback to a regular error.
-                    secError = construct(secErrorConstructor as SecureFunction, [message]);
+                    secError = construct(secErrorProto.constructor as SecureFunction, [message]);
                 } catch {
                     // in case the constructor inference fails
                     secError = new Error(message);

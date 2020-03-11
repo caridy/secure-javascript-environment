@@ -122,12 +122,12 @@ export default function createSecureEnvironment(distortionMap?: Map<SecureProxyT
             // sourceText into the sandbox. By throwing a new raw error, which
             // eliminates the stack information from the sandbox as a consequence.
             let rawError;
-            const { message, constructor } = e;
+            const { message } = e;
             try {
-                const rawErrorConstructor = env.getRawRef(constructor);
+                const rawErrorProto = env.getRawRef(ReflectGetPrototypeOf(e));
                 // the constructor must be registered (done during construction of env)
                 // otherwise we need to fallback to a regular error.
-                rawError = construct(rawErrorConstructor as RawFunction, [message]);
+                rawError = construct(rawErrorProto.constructor as RawFunction, [message]);
             } catch {
                 // in case the constructor inference fails
                 rawError = ErrorCreate(message);

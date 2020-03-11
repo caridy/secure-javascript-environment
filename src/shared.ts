@@ -143,16 +143,29 @@ export const ESGlobalKeys = SetCreate([
     'Intl', // Unstable
 ]);
 
-// These are foundational things that should never be wrapped but are equivalent
+// These are intrinsics that can be reached by syntax, and must be mapped between realms.
 // TODO: revisit this list.
-export const ReflectiveIntrinsicObjectNames = [
-    'Object',
-    'Function',
-    'URIError',
-    'TypeError',
-    'SyntaxError',
-    'ReferenceError',
-    'RangeError',
-    'EvalError',
-    'Error',
-];
+// NOTE: intentionally ignoring EvalError and Error since they are not produced
+//       by syntax anymore.
+export function extractUndeniableIntrinsics(globalObj: typeof globalThis): any[] {
+    return map(globalObj.eval(`[
+        ({}),
+        (_=>1),
+        [],
+        /x/,
+        true,
+        (1),
+        "",
+        (async aPromise=>1)(),
+        (async anAsyncFunc=>1),
+        (function* aGeneratorFunc(){}),
+        (async function* anAsyncGeneratorFunc(){}),
+        (()=>{try{decodeURIComponent('%')}catch(aURIError){return aURIError}})(),
+        (()=>{try{null.f()}catch(aTypeError){return aTypeError}})(),
+        (()=>{try{eval('return')}catch(aSyntaxError){return aSyntaxError}})(),
+        (()=>{try{arguments}catch(aReferenceError){return aReferenceError}})(),
+        (()=>{try{[].length=NaN}catch(aRangeError){return aRangeError}})(),
+        new EvalError,
+        new Error,
+    ]`), (o: any) => o.__proto__);
+}

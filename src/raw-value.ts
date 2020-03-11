@@ -216,14 +216,14 @@ export function reverseProxyFactory(env: MembraneBroker) {
                 // function from the sandbox. By throwing a new raw error, we eliminates the stack
                 // information from the sandbox as a consequence.
                 let rawError;
-                const { message, constructor } = e;
+                const { message } = e;
                 try {
-                    // the error constructor must be a secure error since it occur when calling
+                    // the error prototype must be a secure error since it occur when calling
                     // a function from the sandbox.
-                    const rawErrorConstructor = env.getRawRef(constructor);
-                    // the raw constructor must be registered (done during construction of env)
+                    const rawErrorProto = env.getRawRef(ReflectGetPrototypeOf(e));
+                    // the raw prototype must be registered (done during construction of env)
                     // otherwise we need to fallback to a regular error.
-                    rawError = construct(rawErrorConstructor as RawFunction, [message]);
+                    rawError = construct(rawErrorProto.constructor as RawFunction, [message]);
                 } catch {
                     // in case the constructor inference fails
                     rawError = ErrorCreate(message);
@@ -247,14 +247,14 @@ export function reverseProxyFactory(env: MembraneBroker) {
                 // constructor from the sandbox. By throwing a new raw error, we eliminates the stack
                 // information from the sandbox as a consequence.
                 let rawError;
-                const { message, constructor } = e;
+                const { message } = e;
                 try {
-                    // the error constructor must be a secure error since it occur when calling
+                    // the error prototype must be a secure error since it occur when calling
                     // a function from the sandbox.
-                    const rawErrorConstructor = env.getRawRef(constructor);
-                    // the raw constructor must be registered (done during construction of env)
+                    const rawErrorProto = env.getRawRef(ReflectGetPrototypeOf(e));
+                    // the raw prototype must be registered (done during construction of env)
                     // otherwise we need to fallback to a regular error.
-                    rawError = construct(rawErrorConstructor as RawFunction, [message]);
+                    rawError = construct(rawErrorProto.constructor as RawFunction, [message]);
                 } catch {
                     // in case the constructor inference fails
                     rawError = ErrorCreate(message);

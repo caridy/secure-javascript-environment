@@ -1,6 +1,6 @@
 import { SecureEnvironment } from "./environment";
 import { SecureProxyTarget, RawFunction } from "./types";
-import { getOwnPropertyDescriptors, construct, ErrorCreate } from "./shared";
+import { getOwnPropertyDescriptors, construct, ErrorCreate, ReflectGetPrototypeOf } from "./shared";
 import { runInNewContext } from 'vm';
 
 // note: in a node module, the top-level 'this' is not the global object
@@ -31,12 +31,12 @@ export default function createSecureEnvironment(distortionMap?: Map<SecureProxyT
             // sourceText into the sandbox. By throwing a new raw error, which
             // eliminates the stack information from the sandbox as a consequence.
             let rawError;
-            const { message, constructor } = e;
+            const { message } = e;
             try {
-                const rawErrorConstructor = env.getRawRef(constructor);
-                // the constructor must be registered (done during construction of env)
+                const rawErrorProto = env.getRawRef(ReflectGetPrototypeOf(e));
+                // the proto must be registered (done during construction of env)
                 // otherwise we need to fallback to a regular error.
-                rawError = construct(rawErrorConstructor as RawFunction, [message]);
+                rawError = construct(rawErrorProto.constructor as RawFunction, [message]);
             } catch {
                 // in case the constructor inference fails
                 rawError = ErrorCreate(message);
