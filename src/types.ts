@@ -33,11 +33,14 @@ export type BlueProxy = BlueObject | BlueFunction;
 
 export type DistortionMap = WeakMap<RedProxyTarget, RedProxyTarget>;
 
+export type RedToBlueReferencesMap = WeakMap<RedProxy, RedProxyTarget | BlueProxy>;
+export type BlueToRedReferencesMap = WeakMap<BlueProxy, BlueProxyTarget | RedProxy>;
+
 export interface MembraneBroker {
     // map from red to blue references
-    redMap: WeakMap<RedFunction | RedObject, RedProxyTarget | BlueProxy>;
+    redMap: RedToBlueReferencesMap;
     // map from blue to red references
-    blueMap: WeakMap<BlueFunction | BlueObject, RedProxy | BlueProxyTarget>;
+    blueMap: BlueToRedReferencesMap;
     // blue object distortion map
     distortionMap: DistortionMap;
 

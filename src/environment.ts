@@ -20,7 +20,6 @@ import { serializedRedEnvSourceText, MarshalHooks } from './red';
 import { blueProxyFactory } from './blue';
 import {
     RedObject,
-    RedFunction,
     BlueFunction,
     BlueObject,
     RedProxyTarget,
@@ -29,9 +28,8 @@ import {
     BlueConstructor,
     MembraneBroker,
     DistortionMap,
-    RedProxy,
-    BlueProxy,
-    BlueProxyTarget,
+    RedToBlueReferencesMap,
+    BlueToRedReferencesMap,
 } from './types';
 
 const frameGlobalNamesRegExp = /^\d+$/;
@@ -47,9 +45,9 @@ interface SecureEnvironmentOptions {
 
 export class SecureEnvironment implements MembraneBroker {
     // map from red to blue references
-    redMap: WeakMap<RedFunction | RedObject, RedProxyTarget | BlueProxy> = WeakMapCreate();
+    redMap: RedToBlueReferencesMap = WeakMapCreate();
     // map from blue to red references
-    blueMap: WeakMap<BlueFunction | BlueObject, RedProxy | BlueProxyTarget> = WeakMapCreate();
+    blueMap: BlueToRedReferencesMap = WeakMapCreate();
     // blue object distortion map
     distortionMap: DistortionMap;
 
