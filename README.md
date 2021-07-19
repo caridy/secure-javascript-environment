@@ -54,7 +54,7 @@ window -> Window.prototype -> WindowProperties.prototype -> EventTarget.prototyp
 
 What we do in this case is to keep the identity of those unforgeable around, but changing the descriptors installing on them, and any other method that expects these identities to be passed to them. This make them effectively harmless because they don't give any power.
 
-Additionally, there are others unforgeables like `location` that are host bounded, in that case, we don't have to do much since the detaching mechanism will automatically invalidate them.
+Additionally, there are other unforgeables like `location` that are host bounded, in that case, we don't have to do much since the detaching mechanism will automatically invalidate them.
 
 These can only be virtualized via transpilation if they need to be available inside the sandbox. Such transpilation process is not provided as part of this library.
 
@@ -66,7 +66,7 @@ The only requirement for the in-browser sandboxing mechanism described above is 
 
 Even though this library is still experimental, we want to showcase that it is possible to have a membrane that is fairly fast. The main feature of this library is the laziness aspect of the Red Proxies. Those proxies are only going to be initialized when one of the proxy's traps is invoked the first time. This allow us to have a sandbox creation process that is extremely fast.
 
-Additionally, since existing host JavaScript environments are immense due the the amount of APIs that they offer, most programs will only need a very small subset of those APIs, and this library only activate the portions of the object graph that are observed by the executed code, making it really light weight compared to other implementations.
+Additionally, since existing host JavaScript environments are immense due to the amount of APIs that they offer, most programs will only need a very small subset of those APIs, and this library only activates the portions of the object graph that are observed by the executed code, making it really light weight compared to other implementations.
 
 Finally, Blue Proxies are not lazy, they are initialized the first time they go through the membrane even if they are not used by the Blue Realm. This could be changed in the future if it becomes a bottleneck. For now, since this is a less common case, it seems to be fine.
 
